@@ -35,12 +35,6 @@
   align-items: center;
 }
 
-/* .icon-group {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-} */
-
 .action-btn {
   background-color: rgba(255, 255, 255, 0.2);
   border: none;
@@ -65,27 +59,6 @@
   stroke: white;
   fill: none;
 }
-
-/* .new-note-btn {
-  margin-left: auto;
-  background-color: rgba(255, 255, 255, 0.25);
-  border: none;
-  color: white;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-size: 1.5rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.new-note-btn:hover {
-  background-color: rgba(255, 255, 255, 0.35);
-} */
 
 .search-container {
   padding: 15px 20px;
