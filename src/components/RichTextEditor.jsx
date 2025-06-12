@@ -699,13 +699,13 @@ const RichTextEditor = ({
             className="font-size-select"
             defaultValue="3"
           >
-            <option value="1">10px - Small</option>
-            <option value="2">13px - Normal</option>
-            <option value="3">16px - Medium</option>
-            <option value="4">18px - Large</option>
-            <option value="5">24px - X-Large</option>
-            <option value="6">32px - XX-Large</option>
-            <option value="7">48px - Huge</option>
+            <option value="1">Small</option>
+            <option value="2">Normal</option>
+            <option value="3">Medium</option>
+            <option value="4">Large</option>
+            <option value="5">X-Large</option>
+            <option value="6">XX-Large</option>
+            <option value="7">Huge</option>
           </select>
         </div>
       </div>{" "}
