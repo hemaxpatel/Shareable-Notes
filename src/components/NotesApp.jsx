@@ -107,18 +107,18 @@ const NotesApp = () => {
               onClick={handleExport}
               title="Export Notes"
             >
-              <Download size={16} />
+              <Download size={20} />
             </button>
             <button
               className="action-btn"
               onClick={handleImportClick}
               title="Import Notes"
             >
-              <Upload size={16} />
+              <Upload size={20} />
             </button>
-            <HelpModal />
+            {/* <HelpModal /> */}
             <button
-              className="new-note-btn"
+              className="action-btn"
               onClick={handleCreateNote}
               title="Create New Note"
             >
