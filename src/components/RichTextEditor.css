@@ -581,18 +581,23 @@
 @media (max-width: 768px) {
   .editor-header {
     padding: 15px 20px;
-    flex-direction: column;
-    gap: 15px;
-    align-items: stretch;
+    flex-direction: row; /* KEEP horizontal layout on tablets */
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap; /* allows wrapping ONLY when really needed */
   }
 
   .note-title-input {
-    margin-right: 0;
+    margin-right: 20px;
     font-size: 1.3rem;
+    flex: 1;
+    min-width: 200px;
   }
 
   .editor-actions {
-    justify-content: center;
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap; /* prevent wrapping on tablets */
   }
 
   .toolbar {
