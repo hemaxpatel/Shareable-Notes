@@ -70,13 +70,13 @@
 .toolbar {
   padding: 15px 30px;
   display: flex;
-  flex-wrap: wrap; /* ✅ Allow wrap, but only when needed */
+  flex-wrap: wrap;
   align-items: center;
   gap: 16px;
   background-color: #ffffff;
   border-bottom: 1px solid #e9ecef;
   border-top: 1px solid #e9ecef;
-  min-height: 60px; /* ✅ Prevent collapsing height */
+  min-height: 60px;
 }
 
 .format-group {
@@ -121,7 +121,6 @@
   border-color: #6c63ff;
 }
 
-/* Font size buttons styling */
 .font-size-btn {
   min-width: 36px;
   min-height: 36px;
@@ -201,7 +200,6 @@
   unicode-bidi: normal !important;
 }
 
-/* Allow text alignment to work properly by not forcing left alignment */
 .editor-content p,
 .editor-content div,
 .editor-content span {
@@ -219,7 +217,6 @@
   position: absolute;
 }
 
-/* Glossary highlighting */
 .glossary-term {
   background-color: #fff3cd;
   border-bottom: 2px dotted #ffc107;
@@ -245,7 +242,6 @@
   pointer-events: none;
 }
 
-/* Encrypted note view */
 .encrypted-note {
   display: flex;
   justify-content: center;
@@ -607,10 +603,10 @@
 @media (max-width: 768px) {
   .editor-header {
     padding: 15px 20px;
-    flex-direction: row; /* KEEP horizontal layout on tablets */
+    flex-direction: row;
     gap: 10px;
     align-items: center;
-    flex-wrap: wrap; /* allows wrapping ONLY when really needed */
+    flex-wrap: wrap;
   }
 
   .note-title-input {
@@ -623,7 +619,7 @@
   .editor-actions {
     display: flex;
     gap: 8px;
-    flex-wrap: nowrap; /* prevent wrapping on tablets */
+    flex-wrap: nowrap;
   }
 
   .toolbar {
@@ -637,7 +633,6 @@
     padding: 0 5px;
   }
 
-  /* Better tablet sizing for font size buttons */
   .font-size-btn {
     min-width: 34px;
     min-height: 34px;
@@ -676,7 +671,7 @@
 
   .toolbar {
     padding: 6px 10px;
-    gap: 6px; /* ↓ smaller gap to fit more */
+    gap: 6px;
     flex-wrap: wrap;
     justify-content: flex-start;
   }
@@ -688,7 +683,7 @@
     flex-wrap: nowrap;
   }
   .format-btn {
-    padding: 5px 6px; /* tighter padding */
+    padding: 5px 6px;
     font-size: 0.75rem;
   }
 
@@ -697,7 +692,6 @@
     height: 14px;
   }
 
-  /* Maintain better sizing for font size buttons on mobile */
   .font-size-btn {
     min-width: 32px;
     min-height: 32px;
@@ -708,7 +702,7 @@
 
   .font-size-select {
     padding: 4px 6px;
-    min-width: 90px; /* smaller dropdown */
+    min-width: 90px;
     font-size: 0.75rem;
   }
 
@@ -734,7 +728,6 @@
   }
 }
 
-/* Extra responsive improvements for very small screens */
 @media (max-width: 360px) {
   .format-group {
     gap: 1px;

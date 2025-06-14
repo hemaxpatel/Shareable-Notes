@@ -282,7 +282,7 @@ const RichTextEditor = ({
     if (result.success) {
       setContent(result.data);
       setIsDecrypted(true);
-      setDecryptedNoteId(note.id); // Remember this note was decrypted
+      setDecryptedNoteId(note.id);
       setDecryptPassword("");
     } else {
       alert(result.error);
@@ -445,7 +445,7 @@ const RichTextEditor = ({
           setContent(currentContent);
         }
       }
-    }, 2000); // Longer delay to reduce interference
+    }, 2000);
 
     setGlossaryTimer(newTimer);
   };
