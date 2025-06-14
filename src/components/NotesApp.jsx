@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { Download, Upload } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { Download, Upload, Menu, X } from "lucide-react";
 import { useNotes } from "../hooks/useNotes";
 import NotesList from "./NotesList";
 import RichTextEditor from "./RichTextEditor";
@@ -26,14 +26,21 @@ const NotesApp = () => {
   } = useNotes();
 
   console.log("Notes loaded:", notes.length, "Loading:", loading);
-
   const [searchTerm, setSearchTerm] = useState("");
   const [isCreatingNote, setIsCreatingNote] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const fileInputRef = useRef(null);
   const searchInputRef = useRef(null);
+  const handleSelectNote = (note) => {
+    setSelectedNote(note);
+    // Close sidebar on mobile when note is selected
+    setIsSidebarOpen(false);
+  };
   const handleCreateNote = () => {
     const newNote = createNote();
     setIsCreatingNote(true);
+    // Close sidebar on mobile when creating note
+    setIsSidebarOpen(false);
   };
 
   const handleExport = () => {
@@ -66,10 +73,23 @@ const NotesApp = () => {
     // This will be handled by the RichTextEditor's auto-save
     console.log("Save triggered");
   };
-
   const handleDeleteNote = (noteId) => {
     deleteNote(noteId);
   };
+
+  // Prevent body scroll when sidebar is open on mobile
+  useEffect(() => {
+    if (isSidebarOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isSidebarOpen]);
 
   const filteredNotes = searchNotes(searchTerm);
 
@@ -98,7 +118,32 @@ const NotesApp = () => {
       className="notes-app"
       style={{ backgroundColor: "#f8f9fa", minHeight: "100vh" }}
     >
-      <div className="notes-sidebar">
+      {/* Hamburger Menu Button - Only visible on mobile */}
+      <button
+        className="hamburger-btn"
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        title="Toggle Menu"
+      >
+        <Menu size={24} />
+      </button>
+
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      <div className={`notes-sidebar ${isSidebarOpen ? "sidebar-open" : ""}`}>
+        {/* Close button for mobile sidebar */}
+        <button
+          className="sidebar-close-btn"
+          onClick={() => setIsSidebarOpen(false)}
+          title="Close Menu"
+        >
+          <X size={20} />
+        </button>
         <div className="sidebar-header">
           <h1>Shareable Notes</h1>
           <div className="header-actions">
@@ -143,11 +188,11 @@ const NotesApp = () => {
             className="search-input"
           />
         </div>
-        <NotesStats notes={notes} />
+        <NotesStats notes={notes} />{" "}
         <NotesList
           notes={filteredNotes}
           selectedNote={selectedNote}
-          onSelectNote={setSelectedNote}
+          onSelectNote={handleSelectNote}
           onDeleteNote={deleteNote}
           onPinNote={pinNote}
           searchTerm={searchTerm}

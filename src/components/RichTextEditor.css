@@ -632,10 +632,16 @@
     justify-content: center;
     gap: 10px;
   }
-
   .format-group {
     border-right: none;
     padding: 0 5px;
+  }
+
+  /* Better tablet sizing for font size buttons */
+  .font-size-btn {
+    min-width: 34px;
+    min-height: 34px;
+    font-size: 0.9rem;
   }
 
   .editor-content {
@@ -681,7 +687,6 @@
     border-right: none;
     flex-wrap: nowrap;
   }
-
   .format-btn {
     padding: 5px 6px; /* tighter padding */
     font-size: 0.75rem;
@@ -690,6 +695,15 @@
   .format-btn svg {
     width: 14px;
     height: 14px;
+  }
+
+  /* Maintain better sizing for font size buttons on mobile */
+  .font-size-btn {
+    min-width: 32px;
+    min-height: 32px;
+    padding: 6px 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
   }
 
   .font-size-select {
@@ -713,10 +727,30 @@
     margin: 10px;
     max-width: calc(100% - 20px);
   }
-
   .insights-header,
   .suggestions,
   .keywords {
     padding: 15px 20px;
+  }
+}
+
+/* Extra responsive improvements for very small screens */
+@media (max-width: 360px) {
+  .format-group {
+    gap: 1px;
+    padding: 0 1px;
+  }
+
+  .font-size-btn {
+    min-width: 28px;
+    min-height: 28px;
+    padding: 4px 6px;
+    font-size: 0.75rem;
+    letter-spacing: 0.3px;
+  }
+
+  .toolbar {
+    padding: 4px 8px;
+    gap: 4px;
   }
 }

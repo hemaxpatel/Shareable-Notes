@@ -1,3 +1,99 @@
+/* Hamburger menu button - hidden on desktop */
+.hamburger-btn {
+  display: none;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  background-color: #5a52d5;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  /* display: flex; */
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: white;
+  padding: 0;
+  transition: background-color 0.2s;
+}
+
+.hamburger-btn:hover {
+  background-color: #5a52d5;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(108, 99, 255, 0.4);
+}
+
+.hamburger-btn svg {
+  stroke: white;
+  fill: none;
+  width: 28px;
+  height: 28px;
+  stroke-width: 2;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* Sidebar overlay for mobile */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Close button for mobile sidebar */
+.sidebar-close-btn {
+  display: none;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: #5a52d5;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: white;
+  padding: 0;
+  transition: background-color 0.2s;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar-close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.8);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-close-btn svg {
+  stroke: white;
+  fill: none;
+  width: 24px;
+  height: 24px;
+  stroke-width: 3;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
 .notes-app {
   display: flex;
   height: 100vh;
@@ -132,17 +228,64 @@
 @media (max-width: 768px) {
   .notes-app {
     flex-direction: column;
+    position: relative;
   }
 
+  /* Show hamburger button on mobile */
+  .hamburger-btn {
+    display: flex;
+  } /* Hide sidebar by default on mobile */
   .notes-sidebar {
-    width: 100%;
-    height: 40vh;
-    border-right: none;
-    border-bottom: 1px solid #e9ecef;
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 85%;
+    max-width: 320px;
+    height: 100vh;
+    z-index: 1000;
+    transition: left 0.3s ease-in-out;
+    border-right: 1px solid #e9ecef;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* Allow scrolling within sidebar */
+    padding-top: 70px; /* Space for close button at top */
+  }
+  /* Show sidebar when open */
+  .notes-sidebar.sidebar-open {
+    left: 0;
+  }
+  /* Show overlay when sidebar is open */
+  .notes-app .sidebar-overlay {
+    display: none;
   }
 
+  /* Show close button in mobile sidebar */
+  .sidebar-close-btn {
+    display: flex;
+  }
+  /* Main content takes full space */
   .notes-main {
-    height: 60vh;
+    width: 100%;
+    height: 100vh;
+    margin-left: 0;
+    padding-top: 70px; /* Space for hamburger button */
+  } /* Ensure sidebar header has normal padding - close button has its own space */
+  .sidebar-header {
+    padding: 20px; /* Normal padding, close button is in its own area */
+  }
+
+  /* Reset search container to normal padding */
+  .search-container {
+    padding: 15px 20px; /* Normal padding */
+  }
+
+  /* Reset notes stats to normal padding */
+  .notes-stats {
+    padding: 15px 20px; /* Normal padding */
+  }
+
+  /* Reset notes list to normal padding */
+  .notes-list {
+    padding: 0; /* Normal padding */
   }
 
   .sidebar-header h1 {
@@ -165,13 +308,78 @@
   }
 }
 
-@media (max-width: 480px) {
+/* Tablet responsive design */
+@media (max-width: 768px) and (min-width: 481px) {
+  .notes-sidebar {
+    width: 80%; /* Narrower on tablets */
+    padding-top: 70px; /* Space for close button */
+  }
+  .hamburger-btn {
+    width: 36px;
+    height: 36px;
+    top: 15px;
+    left: 15px;
+  }
+
+  .notes-main {
+    padding-top: 70px;
+  }
+
   .sidebar-header {
-    padding: 15px;
+    padding: 18px;
   }
 
   .search-container {
-    padding: 10px 15px;
+    padding: 12px 18px;
+  }
+
+  .notes-stats {
+    padding: 12px 18px;
+  }
+
+  .sidebar-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .action-btn {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .notes-sidebar {
+    width: 90%; /* Slightly wider on very small screens */
+    padding-top: 70px; /* Space for close button at top */
+  }
+  .hamburger-btn {
+    width: 36px;
+    height: 36px;
+    top: 15px;
+    left: 15px;
+  }
+
+  /* Adjust main content padding for smaller hamburger button */
+  .notes-main {
+    padding-top: 70px; /* Consistent padding with larger screens */
+  }
+
+  .sidebar-header {
+    padding: 15px; /* Normal padding */
+  }
+
+  .search-container {
+    padding: 10px 15px; /* Normal padding */
+  }
+
+  /* Reset notes stats to normal padding */
+  .notes-stats {
+    padding: 12px 15px;
+  }
+
+  /* Reset notes list to normal padding */
+  .notes-list {
+    padding: 0;
   }
 
   .sidebar-header h1 {
