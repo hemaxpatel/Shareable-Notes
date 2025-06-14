@@ -121,6 +121,31 @@
   border-color: #6c63ff;
 }
 
+/* Font size buttons styling */
+.font-size-btn {
+  min-width: 36px;
+  min-height: 36px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.font-size-btn:hover {
+  background-color: #6c63ff;
+  color: white;
+  border-color: #6c63ff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(108, 99, 255, 0.3);
+}
+
+.font-size-btn:active {
+  transform: translateY(0px);
+  box-shadow: 0 1px 4px rgba(108, 99, 255, 0.3);
+}
+
 .font-size-select {
   margin-left: 8px;
   padding: 6px 12px;
@@ -163,7 +188,6 @@
   outline: none;
   border: none;
   direction: ltr !important;
-  text-align: left !important;
   unicode-bidi: normal !important;
   writing-mode: horizontal-tb !important;
 }
@@ -174,15 +198,14 @@
 
 .editor-content * {
   direction: ltr !important;
-  text-align: inherit !important;
   unicode-bidi: normal !important;
 }
 
+/* Allow text alignment to work properly by not forcing left alignment */
 .editor-content p,
 .editor-content div,
 .editor-content span {
   direction: ltr !important;
-  text-align: left !important;
 }
 
 .editor-content br {
@@ -264,6 +287,8 @@
 .password-input {
   flex: 1;
   padding: 10px 15px;
+  background-color: #f1f3f5;
+  color: #343a40;
   border: 1px solid #dee2e6;
   border-radius: 6px;
   font-size: 1rem;
@@ -271,7 +296,7 @@
 }
 
 .password-input:focus {
-  border-color: #6c63ff;
+  border-color: #ffffff;
   box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
 }
 

@@ -38,9 +38,9 @@ const RichTextEditor = ({
   const [insights, setInsights] = useState(null);
   const [grammarErrors, setGrammarErrors] = useState([]);
   const [glossaryTimer, setGlossaryTimer] = useState(null);
-
   const editorRef = useRef(null);
   const titleRef = useRef(null);
+  const lastContentRef = useRef(content);
 
   // Glossary terms for auto-highlighting
   const glossaryTerms = {
@@ -100,18 +100,16 @@ const RichTextEditor = ({
         editorRef.current.innerHTML = note.content;
       }
     }
-  }, [note, decryptedNoteId]);
-
-  // Auto-save functionality
+  }, [note, decryptedNoteId]); // Auto-save functionality - only on title changes
   useEffect(() => {
     const saveTimer = setTimeout(() => {
-      if (title !== note.title || content !== note.content) {
+      if (title !== note.title) {
         handleSave();
       }
-    }, 1000);
+    }, 2000);
 
     return () => clearTimeout(saveTimer);
-  }, [title, content]);
+  }, [title]);
 
   // Cleanup glossary timer on unmount
   useEffect(() => {
@@ -124,10 +122,12 @@ const RichTextEditor = ({
   const handleSave = () => {
     if (note.isEncrypted && !isDecrypted) return;
 
-    // Apply glossary highlighting when saving
-    let finalContent = content;
+    // Get content directly from DOM to avoid state sync issues
+    let finalContent = "";
     if (editorRef.current) {
-      finalContent = highlightGlossaryTerms(editorRef.current.innerHTML);
+      finalContent = editorRef.current.innerHTML;
+      // Update our state to match DOM
+      setContent(finalContent);
     }
 
     onUpdateNote({
@@ -137,15 +137,110 @@ const RichTextEditor = ({
     });
     setIsCreatingNote(false);
   };
-
   const execCommand = (command, value = null) => {
     document.execCommand(command, false, value);
     editorRef.current?.focus();
   };
+  // Save current selection when user interacts with toolbar
+  const saveSelection = () => {
+    const selection = window.getSelection();
+    console.log("Saving selection:", selection);
+    if (
+      selection.rangeCount > 0 &&
+      editorRef.current?.contains(selection.anchorNode)
+    ) {
+      const range = selection.getRangeAt(0);
+      console.log("Selection range:", range, "collapsed:", range.collapsed);
+      savedSelectionRef.current = {
+        startContainer: range.startContainer,
+        startOffset: range.startOffset,
+        endContainer: range.endContainer,
+        endOffset: range.endOffset,
+        collapsed: range.collapsed,
+      };
+      console.log("Saved selection:", savedSelectionRef.current);
+    } else {
+      console.log("No valid selection to save");
+    }
+  };
 
-  const handleFontSizeChange = (e) => {
-    const size = e.target.value;
-    execCommand("fontSize", size);
+  // Restore saved selection
+  const restoreSelection = () => {
+    if (savedSelectionRef.current && editorRef.current) {
+      try {
+        const selection = window.getSelection();
+        const range = document.createRange();
+
+        // Check if saved nodes are still in the document
+        if (
+          editorRef.current.contains(
+            savedSelectionRef.current.startContainer
+          ) &&
+          editorRef.current.contains(savedSelectionRef.current.endContainer)
+        ) {
+          range.setStart(
+            savedSelectionRef.current.startContainer,
+            savedSelectionRef.current.startOffset
+          );
+          range.setEnd(
+            savedSelectionRef.current.endContainer,
+            savedSelectionRef.current.endOffset
+          );
+
+          selection.removeAllRanges();
+          selection.addRange(range);
+          return range;
+        }
+      } catch (error) {
+        console.warn("Could not restore selection:", error);
+      }
+    }
+    return null;
+  };
+  const handleFontSizeChange = (size) => {
+    const selection = window.getSelection();
+
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+
+      if (!range.collapsed) {
+        // Text is selected - apply formatting using modern approach
+        const sizeMap = {
+          1: "10px",
+          2: "13px",
+          3: "16px",
+          4: "18px",
+          5: "24px",
+          6: "32px",
+          7: "48px",
+        };
+
+        // Save the selection first
+        const selectedContent = range.extractContents();
+
+        // Create a span with the font size
+        const span = document.createElement("span");
+        span.style.fontSize = sizeMap[size] || "16px";
+        span.appendChild(selectedContent);
+
+        // Insert the styled span
+        range.insertNode(span);
+
+        // Move cursor to end of the styled text
+        const endRange = document.createRange();
+        endRange.setStartAfter(span);
+        endRange.setEndAfter(span);
+        selection.removeAllRanges();
+        selection.addRange(endRange);
+
+        // Focus back to editor
+        editorRef.current?.focus();
+      } else {
+        // No selection - use execCommand for future typing
+        document.execCommand("fontSize", false, size);
+        editorRef.current?.focus();
+      }
+    }
   };
   const handleEncryption = () => {
     if (password !== confirmPassword) {
@@ -336,74 +431,23 @@ const RichTextEditor = ({
     return highlightedText;
   };
   const handleContentChange = () => {
-    if (editorRef.current) {
-      let newContent = editorRef.current.innerHTML;
-
-      // Update content state
-      setContent(newContent);
-
-      // Force LTR direction for all elements
-      const allElements = editorRef.current.querySelectorAll("*");
-      allElements.forEach((el) => {
-        el.style.direction = "ltr";
-        el.style.textAlign = "left";
-        el.style.unicodeBidi = "normal";
-      });
-
-      // Clear existing glossary timer
-      if (glossaryTimer) {
-        clearTimeout(glossaryTimer);
-      }
-
-      // Set new timer for glossary highlighting after user stops typing
-      const newTimer = setTimeout(() => {
-        if (editorRef.current) {
-          const currentHTML = editorRef.current.innerHTML;
-          const highlightedHTML = highlightGlossaryTerms(currentHTML);
-
-          // Only update if highlighting would change the content
-          if (currentHTML !== highlightedHTML) {
-            // Save current selection
-            const selection = window.getSelection();
-            let savedRange = null;
-            let savedOffset = 0;
-            let savedContainer = null;
-
-            if (selection.rangeCount > 0) {
-              savedRange = selection.getRangeAt(0);
-              savedOffset = savedRange.startOffset;
-              savedContainer = savedRange.startContainer;
-            }
-
-            // Update with highlighting (this won't cause cursor jump since we're not using React state)
-            editorRef.current.innerHTML = highlightedHTML;
-            setContent(highlightedHTML);
-
-            // Restore cursor position
-            if (savedContainer && savedContainer.nodeType === Node.TEXT_NODE) {
-              try {
-                const newRange = document.createRange();
-                const newSelection = window.getSelection();
-                const maxOffset = Math.min(
-                  savedOffset,
-                  savedContainer.textContent.length
-                );
-
-                newRange.setStart(savedContainer, maxOffset);
-                newRange.setEnd(savedContainer, maxOffset);
-                newSelection.removeAllRanges();
-                newSelection.addRange(newRange);
-              } catch (error) {
-                // If restoration fails, just focus the editor
-                editorRef.current.focus();
-              }
-            }
-          }
-        }
-      }, 2000); // Wait 2 seconds after user stops typing
-
-      setGlossaryTimer(newTimer);
+    // Only set a timer to update state occasionally, not on every input
+    if (glossaryTimer) {
+      clearTimeout(glossaryTimer);
     }
+
+    // Set a timer to update state only when user stops typing for a longer time
+    const newTimer = setTimeout(() => {
+      if (editorRef.current) {
+        const currentContent = editorRef.current.innerHTML;
+        // Only update if content has actually changed meaningfully
+        if (currentContent !== content) {
+          setContent(currentContent);
+        }
+      }
+    }, 2000); // Longer delay to reduce interference
+
+    setGlossaryTimer(newTimer);
   };
 
   if (note.isEncrypted && !isDecrypted) {
@@ -490,10 +534,7 @@ const RichTextEditor = ({
         <div className="encryption-modal">
           <div className="encryption-form">
             <h3>Encrypt Note</h3>
-            <p>
-              Set a password to encrypt this note. You'll need this password to
-              access the note in the future.
-            </p>
+            <p>Set a password to encrypt this note.</p>
 
             <div className="password-fields">
               <div className="password-field">
@@ -694,40 +735,58 @@ const RichTextEditor = ({
         </div>{" "}
         <div className="format-group">
           <Type size={16} />
-          <select
-            onChange={handleFontSizeChange}
-            className="font-size-select"
-            defaultValue="3"
+          <button
+            onMouseDown={(e) => {
+              e.preventDefault();
+              handleFontSizeChange("1");
+            }}
+            className="format-btn font-size-btn"
+            title="Small"
           >
-            <option value="1">Small</option>
-            <option value="2">Normal</option>
-            <option value="3">Medium</option>
-            <option value="4">Large</option>
-            <option value="5">X-Large</option>
-            <option value="6">XX-Large</option>
-            <option value="7">Huge</option>
-          </select>
+            S
+          </button>
+          <button
+            onMouseDown={(e) => {
+              e.preventDefault();
+              handleFontSizeChange("3");
+            }}
+            className="format-btn font-size-btn"
+            title="Medium"
+          >
+            M
+          </button>
+          <button
+            onMouseDown={(e) => {
+              e.preventDefault();
+              handleFontSizeChange("5");
+            }}
+            className="format-btn font-size-btn"
+            title="Large"
+          >
+            L
+          </button>
+          <button
+            onMouseDown={(e) => {
+              e.preventDefault();
+              handleFontSizeChange("7");
+            }}
+            className="format-btn font-size-btn"
+            title="Extra Large"
+          >
+            XL
+          </button>
         </div>
       </div>{" "}
       <div
         ref={editorRef}
         contentEditable
         className="editor-content"
-        onInput={handleContentChange}
         onBlur={handleSave}
-        onKeyDown={(e) => {
-          // Force LTR on any text input
-          if (editorRef.current) {
-            editorRef.current.style.direction = "ltr";
-            editorRef.current.style.textAlign = "left";
-          }
-        }}
         style={{
           minHeight: "400px",
           padding: "20px",
           border: "1px solid #ddd",
           direction: "ltr",
-          textAlign: "left",
           unicodeBidi: "normal",
         }}
         suppressContentEditableWarning={true}
