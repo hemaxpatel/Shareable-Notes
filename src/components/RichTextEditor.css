@@ -69,13 +69,14 @@
 
 .toolbar {
   padding: 15px 30px;
-  border-bottom: 1px solid #e9ecef;
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap; /* ✅ Allow wrap, but only when needed */
   align-items: center;
+  gap: 16px;
   background-color: #ffffff;
-  flex-wrap: wrap;
+  border-bottom: 1px solid #e9ecef;
   border-top: 1px solid #e9ecef;
+  min-height: 60px; /* ✅ Prevent collapsing height */
 }
 
 .format-group {
@@ -643,12 +644,38 @@
   }
 
   .toolbar {
-    padding: 8px 15px;
-    gap: 8px;
+    padding: 6px 10px;
+    gap: 6px; /* ↓ smaller gap to fit more */
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .format-group {
+    padding: 0 3px;
+    gap: 3px;
+    border-right: none;
+    flex-wrap: nowrap;
   }
 
   .format-btn {
-    padding: 6px;
+    padding: 5px 6px; /* tighter padding */
+    font-size: 0.75rem;
+  }
+
+  .format-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .font-size-select {
+    padding: 4px 6px;
+    min-width: 90px; /* smaller dropdown */
+    font-size: 0.75rem;
+  }
+
+  .font-size-select option {
+    font-size: 0.75rem;
+    padding: 4px 6px;
   }
 
   .editor-content {

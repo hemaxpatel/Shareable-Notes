@@ -19,10 +19,7 @@ export const demoData = {
         <li><strong>Smart Search</strong>: Find notes quickly with highlighted search results</li>
       </ul>
       
-      <p style="text-align: center;"><em>Try hovering over the highlighted technical terms above!</em></p>
-      
-      <h3>Keyboard Shortcuts:</h3>
-      <p>Use <strong>Ctrl+N</strong> to create new notes, <strong>Ctrl+S</strong> to save, and <strong>Ctrl+F</strong> to search.</p>`,
+      <p style="text-align: center;"><em>Try hovering over the highlighted technical terms above!</em></p>`,
       createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
       updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
       isPinned: true,

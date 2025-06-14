@@ -47,7 +47,11 @@
   background-color: #17a2b8;
 }
 
-.stat-icon.recent {
+/* .stat-icon.recent {
+  background-color: #28a745;
+} */
+
+.stat-icon.words {
   background-color: #28a745;
 }
 
@@ -112,9 +116,9 @@
 }
 
 @media (max-width: 480px) {
-  .stats-grid {
+  /* .stats-grid {
     grid-template-columns: 1fr;
-  }
+  } */
 
   .stat-item {
     justify-content: space-between;

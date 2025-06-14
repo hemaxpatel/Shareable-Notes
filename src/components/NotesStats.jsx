@@ -57,7 +57,7 @@ const NotesStats = ({ notes }) => {
           </div>
         </div>
 
-        <div className="stat-item">
+        {/* <div className="stat-item">
           <div className="stat-icon recent">
             <Calendar size={20} />
           </div>
@@ -65,16 +65,19 @@ const NotesStats = ({ notes }) => {
             <span className="stat-number">{recentNotes}</span>
             <span className="stat-label">This Week</span>
           </div>
-        </div>
+        </div> */}
+        {totalWords > 0 && (
+          <div className="stat-item">
+            <div className="stat-icon words">
+              <Calendar size={20} />
+            </div>
+            <div className="stat-content">
+              <span className="stat-number">{totalWords.toLocaleString()}</span>
+              <span className="stat-label">Words Total</span>
+            </div>
+          </div>
+        )}
       </div>
-
-      {totalWords > 0 && (
-        <div className="word-count-summary">
-          <span className="word-count">
-            {totalWords.toLocaleString()} words total
-          </span>
-        </div>
-      )}
     </div>
   );
 };
